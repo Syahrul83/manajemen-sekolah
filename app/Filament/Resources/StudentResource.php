@@ -42,7 +42,7 @@ class StudentResource extends Resource
                 Select::make('standard_id')
                 ->required()
 
-                ->relationship('standard','name')
+                ->relationship('standard', 'name')
                 ->searchable()
                 ->preload(),
             ]);
@@ -71,6 +71,27 @@ class StudentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                Tables\Actions\Action::make('Promote')
+                ->action(function (Student $record) {
+                    $record->standard_id =  $record->standard_id + 1 ;
+                    $record->save();
+                })->color('success')
+                ->requiresConfirmation(),
+
+
+                Tables\Actions\Action::make('Demoted')
+                ->action(function (Student $record) {
+                    if($record->standard_id > 1) {
+                        $record->standard_id =  $record->standard_id - 1 ;
+                        $record->save();
+                    }
+                })->color('danger')
+                ->requiresConfirmation(),
+            ]),
+
+
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -108,13 +129,13 @@ class StudentResource extends Resource
 
 
     public static function getGlobalSearchResultActions(Model $record): array
-{
-    return [
-        Action::make('edit')
-        ->iconButton()
-        ->icon('heroicon-s-pencil')
-        ->url(static::getUrl('edit', ['record' => $record])),
-    ];
-}
+    {
+        return [
+            Action::make('edit')
+            ->iconButton()
+            ->icon('heroicon-s-pencil')
+            ->url(static::getUrl('edit', ['record' => $record])),
+        ];
+    }
 
 }
