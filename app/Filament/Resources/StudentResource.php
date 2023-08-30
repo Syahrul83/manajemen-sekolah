@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Events\PromoteStudent;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Student;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\GlobalSearch\Actions\Action;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\StudentResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\StudentResource\RelationManagers;
@@ -71,6 +73,7 @@ class StudentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()->successNotificationTitle('User deleted'),
                 Tables\Actions\ActionGroup::make([
                 Tables\Actions\Action::make('Promote')
                 ->action(function (Student $record) {
@@ -96,6 +99,22 @@ class StudentResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+
+                    // cara promete dengan mengunakan collection jika di list laravel
+                        Tables\Actions\BulkAction::make('Promote All')
+                ->action(function (Collection $record) {
+                    $record->each(
+                        function ($record) {
+                            // $record->standard_id =  $record->standard_id + 1 ;
+                            // $record->save();
+                            event(new PromoteStudent($record));
+
+                        }
+                    );
+
+                })->color('success')
+                ->requiresConfirmation()
+                ->deselectRecordsAfterCompletion(),
                 ]),
             ])
             ->emptyStateActions([
