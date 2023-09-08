@@ -2,22 +2,23 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Forms;
+use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use App\Models\Certificate;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\ToggleColumn;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\MarkdownEditor;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\CertificateResource\Pages;
 use App\Filament\Resources\CertificateResource\RelationManagers;
-use App\Models\Certificate;
-use Filament\Forms;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ToggleColumn;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CertificateResource extends Resource
 {
@@ -28,11 +29,30 @@ class CertificateResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
+            // ->schema([
+            //     TextInput::make('name'),
+            //     MarkdownEditor::make('description'),
+            //     Toggle::make('is_active')->default(true),
+            //     FileUpload::make('certificate_image'),
+            // ]);
+
             ->schema([
-                TextInput::make('name'),
-                MarkdownEditor::make('description'),
-                Toggle::make('is_active')->default(true),
-                FileUpload::make('certificate_image'),
+                Card::make([
+
+
+                    TextInput::make('name'),
+                    Toggle::make('is_active')->default(true),
+                    MarkdownEditor::make('description')->columnSpan(2),
+
+                    FileUpload::make('certificate_image')
+                    ->columns(1)
+                    ->multiple()
+                    ->enableReordering()
+                    ->enableOpen()
+                    ->enableDownload()
+                    ->directory('certificate-image')
+                    ->storeFileNamesIn('original_filename'),
+                ]) ->columns(2)
             ]);
     }
 

@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Certificate extends Model
 {
     use HasFactory;
+
+    protected $casts = [
+        'certificate_image' => 'array',
+        'original_filename' => 'array'
+    ];
 }
