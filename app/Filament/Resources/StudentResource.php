@@ -2,17 +2,21 @@
 
 namespace App\Filament\Resources;
 
-use App\Events\PromoteStudent;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Student;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Events\PromoteStudent;
 use Filament\Resources\Resource;
+use Filament\Forms\FormsComponent;
+use Filament\Forms\Components\Grid;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Repeater;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\TextInput;
 use Filament\GlobalSearch\Actions\Action;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,6 +37,9 @@ class StudentResource extends Resource
     {
         return $form
             ->schema([
+
+                Grid::make(1)
+    ->schema([
                 Forms\Components\Wizard::make([
 
                     Forms\Components\Wizard\Step::make('Personal Information')
@@ -59,24 +66,37 @@ class StudentResource extends Resource
 
                 Forms\Components\Wizard\Step::make('School')
                 ->schema([
+                    Select::make('standard_id')
+                    ->required()
+                    ->relationship('standard', 'name')
+                    ->searchable()
+                    ->preload(),
+                    ])->icon('heroicon-o-academic-cap'),
 
 
-            Select::make('standard_id')
-            ->required()
+                    Forms\Components\Wizard\Step::make('Medical')
+                    ->schema([
+                       Repeater::make('vitals')
+                       ->schema([
+                           Select::make('name')
+                           ->options(config('sm_config.vitals'))
+                           ->required(),
 
-            ->relationship('standard', 'name')
-            ->searchable()
-            ->preload(),
+                           TextInput::make('value')
+                           ->required()
+                           ->maxLength(255),
+                       ])
 
-            ])->icon('heroicon-o-academic-cap'),
-
-
-
-                ])->skippable(),
-                // ->startOnStep(3),
+                        ])->icon('heroicon-o-user-plus'),
 
 
-            ]);
+
+
+                ])->skippable()
+// ->startOnStep(3),
+])
+
+                       ]);
     }
 
     public static function table(Table $table): Table

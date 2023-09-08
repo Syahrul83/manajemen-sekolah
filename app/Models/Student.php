@@ -10,14 +10,19 @@ class Student extends Model
 {
     use HasFactory;
 
+
+    protected $casts = [
+        'vitals' => 'json'
+    ];
+
     public function standard()
     {
         return $this->belongsTo(Standard::class);
     }
 
-public function guardians()
-{
-    return 	$this->belongsToMany(Guardian::class);
-}
+    public function guardians()
+    {
+        return 	$this->belongsToMany(Guardian::class);
+    }
 
 }

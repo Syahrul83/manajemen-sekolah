@@ -2,19 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\StandardResource\Pages;
-use App\Filament\Resources\StandardResource\RelationManagers;
-use App\Models\Standard;
 use Filament\Forms;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use App\Models\Standard;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Forms\Components\TextInput;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\StandardResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\StandardResource\RelationManagers;
 
 class StandardResource extends Resource
 {
@@ -26,8 +27,12 @@ class StandardResource extends Resource
     {
         return $form
             ->schema([
+                Section::make('Class Information')
+                ->description('Class Detail for Student resource')
+                ->schema([
                 TextInput::make('name')->required()->maxLength(10),
                 TextInput::make('class_number')->numeric()->required()->maxLength(10)
+                ])
             ]);
     }
 
