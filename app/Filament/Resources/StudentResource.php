@@ -33,20 +33,49 @@ class StudentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                ->required()
-                ->maxLength(255),
-                Forms\Components\TextInput::make('student_id')
-                 ->required()
-                ->maxLength(10),
+                Forms\Components\Wizard::make([
+
+                    Forms\Components\Wizard\Step::make('Personal Information')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                        ->required()
+                        ->maxLength(255),
+                        Forms\Components\TextInput::make('student_id')
+                         ->required()
+                        ->maxLength(10),
+
+                    ])->icon('heroicon-o-users'),
+
+
+                    Forms\Components\Wizard\Step::make('Address')
+                    ->schema([
+
                 Forms\Components\TextInput::make('address_1'),
                 Forms\Components\TextInput::make('address_2'),
-                Select::make('standard_id')
-                ->required()
 
-                ->relationship('standard', 'name')
-                ->searchable()
-                ->preload(),
+
+                ])->icon('heroicon-o-home'),
+
+
+                Forms\Components\Wizard\Step::make('School')
+                ->schema([
+
+
+            Select::make('standard_id')
+            ->required()
+
+            ->relationship('standard', 'name')
+            ->searchable()
+            ->preload(),
+
+            ])->icon('heroicon-o-academic-cap'),
+
+
+
+                ])->skippable(),
+                // ->startOnStep(3),
+
+
             ]);
     }
 
