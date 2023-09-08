@@ -13,6 +13,7 @@ use Filament\Forms\FormsComponent;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Repeater;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\StudentResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\StudentResource\RelationManagers;
+use App\Models\Certificate;
 
 class StudentResource extends Resource
 {
@@ -92,8 +94,26 @@ class StudentResource extends Resource
 
 
 
-                ])->skippable()
+                ])->skippable(),
 // ->startOnStep(3),
+
+  Section::make('Certificates')
+  ->description('Add Student Certificate Information')
+  ->collapsible()
+  ->schema([
+Repeater::make('certificates')
+->relationship()
+->schema([
+Select::make('certificate_id')
+->options(Certificate::all()->pluck('name', 'id'))
+->searchable()
+->required(),
+TextInput::make('description')
+
+
+    ])->columns(2)
+
+    ])
 ])
 
                        ]);

@@ -25,4 +25,10 @@ class Student extends Model
         return 	$this->belongsToMany(Guardian::class);
     }
 
+    public function certificates()
+    {
+        return $this->hasMany(CertificateStudent::class);
+    }
+
+
 }
